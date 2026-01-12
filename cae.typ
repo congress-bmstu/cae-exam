@@ -24,6 +24,8 @@
 #outline()
 #pagebreak()
 
+#include "test.typ"
+
 = Теория
 #include "teor1.typ"
 #include "teor2.typ"
