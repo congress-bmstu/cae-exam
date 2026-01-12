@@ -1,4 +1,3 @@
-
 = Обучение
 alslmdlasmd $sum_i x_i$ asdasdasdasd
 
