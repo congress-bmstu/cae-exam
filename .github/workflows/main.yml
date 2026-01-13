@@ -19,6 +19,38 @@ jobs:
         with:
           source_file: ${{env.DOC_NAME}}.typ
 
+      - name: Compress PDF with Ghostscript
+        run: |
+          # Install Ghostscript if not already available
+          if ! command -v gs &> /dev/null; then
+            sudo apt-get update && sudo apt-get install -y ghostscript
+          fi
+          
+          # Compress the PDF /screen /ebook /printer /prepress
+          gs -sDEVICE=pdfwrite \
+             -dCompatibilityLevel=1.5 \
+             -dPDFSETTINGS=/ebook \
+             -dNOPAUSE \
+             -dQUIET \
+             -dBATCH \
+             -sOutputFile="${{env.DOC_NAME}}_compressed.pdf" \
+             "${{env.DOC_NAME}}.pdf"
+          
+          # Check if compression was successful
+          if [ -f "${{env.DOC_NAME}}_compressed.pdf" ]; then
+            # Get file sizes for comparison
+            original_size=$(stat -c%s "${{env.DOC_NAME}}.pdf")
+            compressed_size=$(stat -c%s "${{env.DOC_NAME}}_compressed.pdf")
+            echo "Original: $((original_size/1024))KB"
+            echo "Compressed: $((compressed_size/1024))KB"
+            echo "Reduction: $((100 - (compressed_size * 100 / original_size)))%"
+            
+            # Replace original with compressed version
+            mv "${{env.DOC_NAME}}_compressed.pdf" "${{env.DOC_NAME}}.pdf"
+          else
+            echo "Compression failed, using original PDF"
+          fi
+
       - name: Get current date
         id: date
         run: echo "DATE=$(date +%Y-%m-%d_%H-%M)" >> $GITHUB_ENV
