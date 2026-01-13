@@ -17,11 +17,7 @@ jobs:
       - name: Install emoji fonts
         run: |
           sudo apt-get update
-          # Install Noto Color Emoji (Google's emoji font)
-          sudo apt-get install -y fonts-noto-color-emoji
-          
-          # Or install multiple emoji fonts for better coverage:
-          sudo apt-get install -y fonts-emojione fonts-noto-color-emoji fonts-twemoji
+          sudo apt-get install -y fonts-emojione fonts-noto-color-emoji
           
           # Verify installation
           fc-list | grep -i emoji || echo "Emoji fonts installed"
